@@ -29,12 +29,8 @@ class Net::LDAP
   class ConnectionError < Error
     def self.new(errors)
       error = errors.first.first
-      if errors.size == 1
-        if error.kind_of? Errno::ECONNREFUSED
-          return Net::LDAP::ConnectionRefusedError.new(error.message)
-        end
-
-        return Net::LDAP::Error.new(error.message)
+      if errors.size == 1 && error.kind_of?(Errno::ECONNREFUSED)
+        return Net::LDAP::ConnectionRefusedError.new(error.message)
       end
 
       super
